@@ -9,6 +9,12 @@ struct Uint256 {
     lo: Field
 }
 
+impl Uint256 {
+    fn eq(self, other: Uint256) -> bool {
+        ((self.hi == other.hi) as u8 & (self.lo == other.lo) as u8) != 0
+    }
+}
+
 struct Address {
     value: Field
 }
@@ -29,7 +35,7 @@ struct Account {
 unconstrained fn fetch_account_oracle() -> Account {}
 
 
-fn fetch_account(address: Address, slots: Bytes32, blockHash: Bytes32) -> Account {
+unconstrained fn fetch_account(address: Address, slots: Bytes32, blockHash: Bytes32) -> Account {
     let account = fetch_account_oracle();
     //TODO: Assert on account proof
     account
@@ -40,22 +46,28 @@ fn main(x: Field, y: pub Field) {
     assert(x != y);
 }
 
+#[oracle(foo)]
+unconstrained fn foo_oracle() -> Field {}
+
 #[test]
-fn test_main() {
-    OracleMock::mock("fetch_account").returns(Account {
-        balance: Uint256 {0, 0},
-        codeHash: Bytes32 {0},
+unconstrained fn test_main() {
+    let account: Account = Account {
+        balance: Uint256 { hi: 0, lo: 0},
+        codeHash: Bytes32 { value: [0; 32] },
         nonce: 0,
-        storageHash: Bytes32 {0},
-        accountProof: [Bytes32 {0}; 64]
-    });
+        storageHash: Bytes32 { value: [0; 32] },
+        accountProof: [Bytes32 { value: [0; 32] }; 64]
+    };
 
-    // let address = {0};
-    // let blockHash = {0};
-    // let slot = {0};
-    // let value = fetch_account(address, blockHash, slot);
+    OracleMock::mock("fetch_account").returns(account);
 
-    // assert(value.balance == {0, 0});
+    let address = Address {value: 0 };
+    let blockHash = Bytes32 { value: [0; 32] };
+    let slot = Bytes32 { value: [0; 32] };
+    
+    let value = fetch_account(address, blockHash, slot);
+
+    assert(value.balance.eq(Uint256 { hi: 0, lo: 0}));
 }
 
 
