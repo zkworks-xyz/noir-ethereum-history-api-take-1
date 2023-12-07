@@ -34,23 +34,14 @@ struct Account {
 #[oracle(fetch_account)]
 unconstrained fn fetch_account_oracle() -> Account {}
 
-
 unconstrained fn fetch_account(address: Address, slots: Bytes32, blockHash: Bytes32) -> Account {
     let account = fetch_account_oracle();
-    //TODO: Assert on account proof
+    // TODO: Assert on account proof using https://github.com/aragonzkresearch/noir-trie-proofs"
     account
 }
 
-
-fn main(x: Field, y: pub Field) {
-    assert(x != y);
-}
-
-#[oracle(foo)]
-unconstrained fn foo_oracle() -> Field {}
-
 #[test]
-unconstrained fn test_main() {
+unconstrained fn test_fetch_account() {
     let account: Account = Account {
         balance: Uint256 { hi: 0, lo: 0},
         codeHash: Bytes32 { value: [0; 32] },
