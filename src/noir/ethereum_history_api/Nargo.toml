@@ -1,6 +1,6 @@
 [package]
 name = "ethereum_history_api"
-type = "bin"
+type = "lib"
 authors = [""]
 compiler_version = ">=0.19.4"
 
