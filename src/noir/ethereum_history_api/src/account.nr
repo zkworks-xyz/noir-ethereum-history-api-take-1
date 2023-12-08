@@ -11,7 +11,7 @@ struct Uint256 {
 
 impl Uint256 {
     fn eq(self, other: Uint256) -> bool {
-        ((self.hi == other.hi) & (self.lo == other.lo))
+        (self.hi == other.hi) & (self.lo == other.lo)
     }
 }
 
